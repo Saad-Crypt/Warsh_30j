@@ -61,24 +61,6 @@
     .brand h1{font-size:19px;} .brand p{display:block;} .top-inner{padding:14px 20px 10px;}
   }
   .toolbar{display:flex; align-items:center; gap:8px; flex-wrap:wrap;}
-  .tool-group{
-    display:flex; align-items:center; gap:6px;
-    background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.14);
-    padding:4px 8px; border-radius:8px;
-  }
-  .tool-group label{font-size:11.5px; color:#d8e2d3; white-space:nowrap;}
-  select.tool-select{
-    background:transparent; color:#f8f1de; border:none; font-size:13px; font-weight:700;
-    font-family:inherit; cursor:pointer; outline:none; width:50px; text-align:center;
-  }
-  select.tool-select option{color:#1c1c1c; font-weight:600;}
-  .step-btn{
-    width:32px;height:32px;border-radius:8px;border:1px solid rgba(255,255,255,.25);
-    background:rgba(255,255,255,.08); color:#fbeed3; cursor:pointer; font-size:16px;
-    line-height:1; display:flex;align-items:center;justify-content:center; flex:none;
-  }
-  .step-btn:hover{background:rgba(255,255,255,.18);}
-  .dropdown{position:relative;}
   .dropdown-btn{
     display:flex; align-items:center; gap:6px;
     background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.22);
@@ -86,6 +68,13 @@
     font-family:'Cairo',sans-serif; font-weight:700; font-size:13px;
   }
   .dropdown-btn:hover{background:rgba(255,255,255,.18);}
+  .step-btn{
+    width:32px;height:32px;border-radius:8px;border:1px solid rgba(255,255,255,.25);
+    background:rgba(255,255,255,.08); color:#fbeed3; cursor:pointer; font-size:16px;
+    line-height:1; display:flex;align-items:center;justify-content:center; flex:none;
+  }
+  .step-btn:hover{background:rgba(255,255,255,.18);}
+  .dropdown{position:relative;}
   .dropdown-btn .chev{transition:transform .2s; font-size:10px; opacity:.8;}
   .dropdown.open .dropdown-btn .chev{transform:rotate(180deg);}
   .dropdown-panel{
@@ -105,7 +94,6 @@
   }
   #dropdownBackdrop.show{opacity:1; pointer-events:auto;}
 
-  /* Hijri Calendar Modal */
   .hijri-modal{
     position:fixed; inset:0; z-index:250; background:rgba(15,30,25,.75);
     backdrop-filter:blur(6px); display:none; align-items:center; justify-content:center;
@@ -197,7 +185,6 @@
   }
   .hijri-info b{color:var(--emerald);}
 
-  /* Settings Modal */
   .settings-modal{
     position:fixed; inset:0; z-index:200; background:rgba(15,30,25,.65);
     backdrop-filter:blur(6px); display:none; align-items:flex-end; justify-content:center;
@@ -212,7 +199,6 @@
   @media (min-width:600px){
     .settings-modal{align-items:center;} .settings-modal-content{border-radius:20px;}
   }
-  @keyframes slideUp2{from{transform:translateY(100%);} to{transform:translateY(0);}}
   .settings-section{padding:14px 0; border-bottom:1px solid #efe6c9;}
   .settings-section:last-child{border-bottom:none;}
   .settings-section h4{margin:0 0 10px; font-size:13px; color:var(--emerald); font-family:'Cairo',sans-serif; font-weight:800;}
@@ -369,6 +355,11 @@
     direction:ltr; background:#ffebee; padding:10px; border-radius:6px;
     max-width:100%; word-break:break-word; display:none;
   }
+  .success-msg{
+    color:#2e7d32; font-size:13px; margin-top:10px; font-family:'Cairo',sans-serif;
+    background:#e8f5e9; padding:12px; border-radius:8px;
+    max-width:100%; text-align:center; display:none;
+  }
   footer.credits{
     max-width:1300px; margin:0 auto; padding:10px 24px 40px; color:var(--ink-soft);
     font-size:11px; text-align:center; line-height:1.8;
@@ -414,7 +405,7 @@
     </div>
     <div class="toolbar">
       <button class="dropdown-btn" id="hijriBtn" title="التقويم الهجري">
-        📅 <span id="hijriDisplay">اليوم الهجري</span>
+         <span id="hijriDisplay">اليوم الهجري</span>
       </button>
       <div class="dropdown" id="indexDropdown">
         <button class="dropdown-btn" id="indexBtn">الفهرس <span class="chev">▾</span></button>
@@ -500,6 +491,8 @@
     
     <div class="hijri-grid" id="hijriGrid"></div>
     
+    <div id="saveStatus" class="success-msg"></div>
+    
     <div class="hijri-actions">
       <button class="cancel-btn" id="hijriCancel">إلغاء</button>
       <button class="save-btn" id="hijriSave">💾 حفظ وفتح الجزء</button>
@@ -567,7 +560,7 @@
 
 <div id="autoscrollFab">
   <span id="autoscrollFabLabel">أعلى: متوسط</span>
-  <button id="autoscrollFabPause" title="إيقاف مؤقت">⏸</button>
+  <button id="autoscrollFabPause" title="إيقاف مؤقت"></button>
   <button id="autoscrollFabStop" title="إيقاف">✕</button>
 </div>
 
@@ -639,6 +632,7 @@
   const audioPlayer = document.getElementById('audioPlayer');
   const audioTitle = document.getElementById('audioTitle');
   const hijriDisplay = document.getElementById('hijriDisplay');
+  const saveStatus = document.getElementById('saveStatus');
 
   function cleanText(t){ return (t || '').replace(/[\uFEFF\u200B\u200C\u200D]/g, '').trim(); }
   function normalize(str){
@@ -646,9 +640,125 @@
       .replace(/[إأآٱا]/g,'ا').replace(/ى/g,'ي').replace(/ة/g,'ه').replace(/[ؤئ]/g,'ء').replace(/\s+/g,' ').trim();
   }
 
+  // ============ Multi-Layer Storage System ============
+  // يعمل في جميع الحالات: WebView، GitHub Pages، المتصفح العادي
+  
+  const MultiStorage = {
+    // حفظ البيانات
+    set: function(key, value) {
+      const methods = [];
+      
+      // الطريقة 1: localStorage
+      try {
+        localStorage.setItem(key, value);
+        methods.push('localStorage');
+      } catch (e) {
+        console.warn('localStorage غير متاح:', e.message);
+      }
+      
+      // الطريقة 2: sessionStorage
+      try {
+        sessionStorage.setItem(key, value);
+        methods.push('sessionStorage');
+      } catch (e) {
+        console.warn('sessionStorage غير متاح:', e.message);
+      }
+      
+      // الطريقة 3: Cookie
+      try {
+        document.cookie = key + '=' + encodeURIComponent(value) + ';max-age=31536000;path=/;SameSite=Lax';
+        methods.push('cookie');
+      } catch (e) {
+        console.warn('Cookie غير متاح:', e.message);
+      }
+      
+      // الطريقة 4: URL Hash (يعمل دائماً)
+      try {
+        const currentHash = window.location.hash.replace('#', '');
+        const params = new URLSearchParams(currentHash);
+        params.set(key, value);
+        // استخدام replaceState لتجنب إضافة سجل في المتصفح
+        const newHash = params.toString();
+        window.history.replaceState(null, '', window.location.pathname + window.location.search + (newHash ? '#' + newHash : ''));
+        methods.push('URL hash');
+      } catch (e) {
+        console.warn('URL Hash غير متاح:', e.message);
+      }
+      
+      // الطريقة 5: window.name (يبقى خلال الجلسة)
+      try {
+        let data = {};
+        try { data = JSON.parse(window.name || '{}'); } catch(e) {}
+        data[key] = value;
+        window.name = JSON.stringify(data);
+        methods.push('window.name');
+      } catch (e) {
+        console.warn('window.name غير متاح:', e.message);
+      }
+      
+      // الطريقة 6: متغير عام (مؤقت)
+      if (!window._appStorage) window._appStorage = {};
+      window._appStorage[key] = value;
+      methods.push('memory');
+      
+      console.log('✅ تم الحفظ باستخدام:', methods.join(', '));
+      return methods;
+    },
+    
+    // قراءة البيانات
+    get: function(key) {
+      // الطريقة 1: localStorage
+      try {
+        const val = localStorage.getItem(key);
+        if (val) { console.log('✅ تم القراءة من localStorage'); return val; }
+      } catch (e) {}
+      
+      // الطريقة 2: sessionStorage
+      try {
+        const val = sessionStorage.getItem(key);
+        if (val) { console.log('✅ تم القراءة من sessionStorage'); return val; }
+      } catch (e) {}
+      
+      // الطريقة 3: Cookie
+      try {
+        const cookies = document.cookie.split(';');
+        for (let c of cookies) {
+          c = c.trim();
+          if (c.startsWith(key + '=')) {
+            const val = decodeURIComponent(c.substring(key.length + 1));
+            console.log('✅ تم القراءة من cookie');
+            return val;
+          }
+        }
+      } catch (e) {}
+      
+      // الطريقة 4: URL Hash
+      try {
+        const hash = window.location.hash.replace('#', '');
+        const params = new URLSearchParams(hash);
+        const val = params.get(key);
+        if (val) { console.log('✅ تم القراءة من URL hash'); return val; }
+      } catch (e) {}
+      
+      // الطريقة 5: window.name
+      try {
+        const data = JSON.parse(window.name || '{}');
+        if (data[key]) { console.log('✅ تم القراءة من window.name'); return data[key]; }
+      } catch (e) {}
+      
+      // الطريقة 6: متغير عام
+      if (window._appStorage && window._appStorage[key]) {
+        console.log('✅ تم القراءة من الذاكرة');
+        return window._appStorage[key];
+      }
+      
+      console.log('❌ لم يتم العثور على:', key);
+      return null;
+    }
+  };
+
   // ============ Hijri Calendar Functions ============
   
-  // Get current Hijri date using Intl API
   function getCurrentHijriDate() {
     try {
       const formatter = new Intl.DateTimeFormat('en-u-ca-islamic-umalqura', {
@@ -661,16 +771,16 @@
         if (p.type === 'month') month = HIJRI_MONTHS.indexOf(p.value) + 1;
         if (p.type === 'year') year = parseInt(p.value);
       });
-      return { day: day, month: month, year: year };
+      if (day > 0 && month > 0 && year > 0) {
+        return { day: day, month: month, year: year };
+      }
     } catch (e) {
-      return { day: 1, month: 1, year: 1447 };
+      console.warn('فشل في الحصول على التاريخ الهجري:', e);
     }
+    return { day: 1, month: 1, year: 1447 };
   }
 
-  // Get number of days in a Hijri month (approximation)
   function getHijriMonthDays(year, month) {
-    // Hijri months alternate between 30 and 29 days, with adjustments
-    // This is a simplified approximation
     if (month % 2 === 1) return 30;
     if (month === 12 && isHijriLeapYear(year)) return 30;
     return 29;
@@ -680,17 +790,10 @@
     return [2, 5, 7, 10, 13, 16, 18, 21, 24, 26, 29].indexOf(year % 30) !== -1;
   }
 
-  // Get first day of Hijri month (0=Sunday, 1=Monday, ..., 6=Saturday)
   function getFirstDayOfHijriMonth(year, month) {
-    // Approximate conversion to Gregorian to get day of week
-    // This is a rough estimate
     try {
-      const hijriDateStr = year + '-' + String(month).padStart(2,'0') + '-01';
-      // Use a reference point: 1447-01-01 ≈ 2025-07-01 (approximate)
-      const refDate = new Date(2025, 6, 1); // July 1, 2025
+      const refDate = new Date(2025, 6, 1);
       const refHijri = { year: 1447, month: 1, day: 1 };
-      
-      // Calculate days difference (approximate)
       let daysDiff = (year - refHijri.year) * 354 + (month - refHijri.month) * 29.5;
       const targetDate = new Date(refDate.getTime() + daysDiff * 24 * 60 * 60 * 1000);
       return targetDate.getDay();
@@ -699,32 +802,40 @@
     }
   }
 
-  // Load saved Hijri date from localStorage
   function loadSavedHijriDate() {
     try {
-      const saved = localStorage.getItem(STORAGE_KEY);
+      const saved = MultiStorage.get(STORAGE_KEY);
       if (saved) {
         const data = JSON.parse(saved);
         if (data && data.year && data.month && data.day) {
+          console.log('✅ تم تحميل التاريخ المحفوظ:', data);
           return data;
         }
       }
-    } catch (e) {}
+    } catch (e) {
+      console.error('خطأ في تحميل التاريخ:', e);
+    }
     return null;
   }
 
-  // Save Hijri date to localStorage
   function saveHijriDate(year, month, day) {
     try {
-      const data = { year: year, month: month, day: day, savedAt: Date.now() };
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-      return true;
+      const data = { 
+        year: year, 
+        month: month, 
+        day: day, 
+        savedAt: Date.now() 
+      };
+      
+      const methods = MultiStorage.set(STORAGE_KEY, JSON.stringify(data));
+      console.log('✅ تم حفظ التاريخ:', data, 'الطرق:', methods);
+      return methods;
     } catch (e) {
-      return false;
+      console.error('خطأ في حفظ التاريخ:', e);
+      return [];
     }
   }
 
-  // Update Hijri display in header
   function updateHijriDisplay() {
     const saved = loadSavedHijriDate();
     if (saved) {
@@ -734,12 +845,10 @@
     }
   }
 
-  // Render Hijri calendar grid
   function renderHijriGrid() {
     const grid = document.getElementById('hijriGrid');
     grid.innerHTML = '';
     
-    // Day names header
     DAY_NAMES.forEach(function(name) {
       const cell = document.createElement('div');
       cell.className = 'day-name';
@@ -747,20 +856,17 @@
       grid.appendChild(cell);
     });
     
-    // Get month info
     const year = hijriState.year;
     const month = hijriState.month;
     const daysInMonth = getHijriMonthDays(year, month);
     const firstDay = getFirstDayOfHijriMonth(year, month);
     
-    // Empty cells before first day
     for (let i = 0; i < firstDay; i++) {
       const cell = document.createElement('div');
       cell.className = 'day-cell empty';
       grid.appendChild(cell);
     }
     
-    // Day cells
     const currentHijri = getCurrentHijriDate();
     for (let day = 1; day <= daysInMonth; day++) {
       const cell = document.createElement('div');
@@ -784,17 +890,14 @@
       grid.appendChild(cell);
     }
     
-    // Update month label
     document.getElementById('currentMonthLabel').textContent = 
       HIJRI_MONTHS[month - 1] + ' ' + year + ' هـ';
   }
 
-  // Open Hijri modal
   function openHijriModal() {
     const modal = document.getElementById('hijriModal');
     modal.classList.add('show');
     
-    // Initialize with saved date or current date
     const saved = loadSavedHijriDate();
     const current = getCurrentHijriDate();
     
@@ -804,7 +907,6 @@
       hijriState = { year: current.year, month: current.month, day: current.day };
     }
     
-    // Populate year selector
     const yearSelect = document.getElementById('hijriYear');
     yearSelect.innerHTML = '';
     for (let y = 1400; y <= 1500; y++) {
@@ -815,53 +917,63 @@
       yearSelect.appendChild(opt);
     }
     
-    // Set month
     document.getElementById('hijriMonth').value = hijriState.month;
     
-    // Update today display
     document.getElementById('todayHijri').textContent = 
       current.day + ' ' + HIJRI_MONTHS[current.month - 1] + ' ' + current.year + ' هـ';
     
     renderHijriGrid();
   }
 
-  // Close Hijri modal
   function closeHijriModal() {
     document.getElementById('hijriModal').classList.remove('show');
+    saveStatus.style.display = 'none';
   }
 
-  // Save and open juz
+  function showSaveStatus(message, isError) {
+    saveStatus.textContent = message;
+    saveStatus.style.display = 'block';
+    saveStatus.style.background = isError ? '#ffebee' : '#e8f5e9';
+    saveStatus.style.color = isError ? '#d32f2f' : '#2e7d32';
+    
+    setTimeout(function() {
+      saveStatus.style.display = 'none';
+    }, 4000);
+  }
+
   function saveAndOpenJuz() {
     const year = parseInt(document.getElementById('hijriYear').value);
     const month = parseInt(document.getElementById('hijriMonth').value);
     const day = hijriState.day;
     
     if (!day) {
-      alert('الرجاء اختيار يوم من الشهر');
+      showSaveStatus('⚠️ الرجاء اختيار يوم من الشهر', true);
       return;
     }
     
-    // Save to localStorage
-    if (saveHijriDate(year, month, day)) {
+    const methods = saveHijriDate(year, month, day);
+    
+    if (methods && methods.length > 0) {
       updateHijriDisplay();
       closeHijriModal();
       
-      // Open appropriate juz (day 1 = juz 1, day 30 = juz 30)
+      showSaveStatus('✅ تم الحفظ بنجاح! اليوم ' + day + ' ' + HIJRI_MONTHS[month-1] + ' ' + year + ' هـ', false);
+      
       const juzNum = Math.min(Math.max(day, 1), 30);
       
-      // Wait for data to load if needed
       if (Object.keys(juzVerses).length > 0) {
         renderJuz(juzNum);
         window.scrollTo({ top: 0, behavior: 'smooth' });
       } else {
-        // Data not loaded yet, will be handled after load
         setTimeout(function() {
-          renderJuz(juzNum);
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        }, 1000);
+          if (Object.keys(juzVerses).length > 0) {
+            renderJuz(juzNum);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }
+        }, 1500);
       }
     } else {
-      alert('تعذر حفظ التاريخ. تأكد من أن المتصفح يدعم التخزين المحلي.');
+      showSaveStatus('⚠️ فشل الحفظ. سيتم التذكر في هذه الجلسة فقط.', true);
     }
   }
 
@@ -927,18 +1039,18 @@
         buildSurahList();
         buildJuzList();
         
-        // Check if there's a saved Hijri date
+        // التحقق من وجود تاريخ محفوظ
         const saved = loadSavedHijriDate();
         if (saved) {
-          // Open the appropriate juz automatically
+          console.log('✅ يوجد تاريخ محفوظ، سيتم فتح الجزء:', saved.day);
           const juzNum = Math.min(Math.max(saved.day, 1), 30);
           renderJuz(juzNum);
         } else {
-          // No saved date, show surah 1 and open calendar
+          console.log('️ لا يوجد تاريخ محفوظ، سيتم فتح السورة الأولى');
           renderSurah(1);
           setTimeout(function() {
             openHijriModal();
-          }, 500);
+          }, 800);
         }
         
       }catch(e){
@@ -1109,7 +1221,6 @@
     if(!surahListEl.hidden) buildSurahList(e.target.value);
   });
 
-  // Settings Modal
   const settingsModal = document.getElementById('settingsModal');
   document.getElementById('settingsBtn').addEventListener('click', function(){ settingsModal.classList.add('show'); });
   document.getElementById('settingsModalClose').addEventListener('click', function(){ settingsModal.classList.remove('show'); });
@@ -1131,7 +1242,6 @@
     fontSizeVal.textContent = fontSize;
   });
 
-  // Dropdowns
   const dropdowns = [document.getElementById('indexDropdown')];
   const dropdownBackdrop = document.getElementById('dropdownBackdrop');
   function closeAllDropdowns(except){
@@ -1152,7 +1262,6 @@
   dropdownBackdrop.addEventListener('click', function(){ closeAllDropdowns(); });
   document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeAllDropdowns(); });
 
-  // Hijri Calendar Event Listeners
   document.getElementById('hijriBtn').addEventListener('click', openHijriModal);
   document.getElementById('hijriCancel').addEventListener('click', closeHijriModal);
   document.getElementById('hijriSave').addEventListener('click', saveAndOpenJuz);
@@ -1193,7 +1302,6 @@
     renderHijriGrid();
   });
 
-  // Auto-scroll
   let scrollSpeed = 45;
   let scrolling = false;
   let rafId = null;
@@ -1214,7 +1322,7 @@
 
   function startAutoScroll(){
     scrolling = true; lastTs = null;
-    autoscrollToggle.textContent = '⏸ إيقاف التمرير التلقائي';
+    autoscrollToggle.textContent = ' إيقاف التمرير التلقائي';
     autoscrollToggle.classList.add('on');
     autoscrollFab.classList.add('show');
     document.getElementById('autoscrollFabPause').textContent = '⏸';
@@ -1253,7 +1361,6 @@
   window.addEventListener('wheel', function(){ if(scrolling) pauseAutoScroll(); }, {passive:true});
   window.addEventListener('touchstart', function(){ if(scrolling) pauseAutoScroll(); }, {passive:true});
 
-  // Search
   const searchInput = document.getElementById('searchInput');
   const searchResults = document.getElementById('searchResults');
   let searchTimer = null;
@@ -1298,7 +1405,14 @@
     searchResults.classList.add('show');
   }
 
-  // Initialize
+  // اختبار نظام التخزين عند التحميل
+  console.log('=== اختبار نظام التخزين ===');
+  const testMethods = MultiStorage.set('test_key', 'test_value');
+  console.log('طرق الحفظ المتاحة:', testMethods);
+  const testRead = MultiStorage.get('test_key');
+  console.log('قيمة القراءة:', testRead);
+  console.log('========================');
+
   updateHijriDisplay();
   loadAll();
 })();
