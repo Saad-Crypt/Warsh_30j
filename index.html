@@ -14,22 +14,12 @@
     font-display: swap;
   }
   :root{
-    --parchment:#f8f2e2;
-    --parchment-deep:#efe4c8;
-    --ink:#22301f;
-    --ink-soft:#4a5744;
-    --emerald:#0f3d34;
-    --emerald-deep:#0a2b25;
-    --gold:#b3873e;
-    --gold-soft:#d9b876;
-    --gold-line:#d8c390;
-    --card:#fffdf6;
-    --shadow: 0 8px 30px rgba(15,61,52,.12);
+    --parchment:#f8f2e2; --parchment-deep:#efe4c8; --ink:#22301f; --ink-soft:#4a5744;
+    --emerald:#0f3d34; --emerald-deep:#0a2b25; --gold:#b3873e; --gold-soft:#d9b876;
+    --gold-line:#d8c390; --card:#fffdf6; --shadow: 0 8px 30px rgba(15,61,52,.12);
     --reader-font: 'KFGQPC Warsh Uthmanic', 'Amiri Quran', 'Scheherazade New', serif;
-    --reader-size: 30px;
-    --radius: 14px;
+    --reader-size: 30px; --radius: 14px;
   }
-
   *{box-sizing:border-box;}
   html,body{height:100%; margin:0; padding:0;}
   body{
@@ -38,11 +28,8 @@
       radial-gradient(1200px 700px at 85% -10%, rgba(179,135,62,.10), transparent 60%),
       radial-gradient(900px 600px at -10% 110%, rgba(15,61,52,.10), transparent 55%),
       var(--parchment);
-    color:var(--ink);
-    min-height:100dvh;
-    -webkit-tap-highlight-color: transparent;
+    color:var(--ink); min-height:100dvh; -webkit-tap-highlight-color: transparent;
   }
-
   .mesh-rule{
     height:8px;
     background-image: linear-gradient(135deg, var(--gold) 25%, transparent 25%),
@@ -50,63 +37,47 @@
                        linear-gradient(45deg, var(--gold) 25%, transparent 25%),
                        linear-gradient(315deg, var(--gold) 25%, transparent 25%);
     background-position: 10px 0, 10px 0, 0 0, 0 0;
-    background-size: 16px 16px;
-    background-repeat: repeat-x;
-    opacity:.55;
+    background-size: 16px 16px; background-repeat: repeat-x; opacity:.55;
   }
-
   header.top{
     position:sticky; top:0; z-index:40;
     background: linear-gradient(180deg, var(--emerald) 0%, var(--emerald-deep) 100%);
-    color:#f6ead0;
-    box-shadow: var(--shadow);
+    color:#f6ead0; box-shadow: var(--shadow);
   }
   .top-inner{
-    max-width:1300px; margin:0 auto;
-    padding:8px 12px;
+    max-width:1300px; margin:0 auto; padding:8px 12px;
     display:flex; flex-wrap:wrap; align-items:center; gap:8px 12px;
   }
-  .brand{
-    display:flex; align-items:center; gap:10px;
-    margin-inline-end:auto;
-  }
+  .brand{display:flex; align-items:center; gap:10px; margin-inline-end:auto;}
   .brand .roundel{
-    width:36px;height:36px;border-radius:50%;
-    border:2px solid var(--gold-soft);
+    width:36px;height:36px;border-radius:50%; border:2px solid var(--gold-soft);
     display:flex;align-items:center;justify-content:center;
     font-family:'Amiri Quran',serif; font-size:18px; color:var(--gold-soft);
     background:rgba(0,0,0,.15); flex:none;
   }
-  .brand h1{ margin:0; font-size:15px; font-weight:800; letter-spacing:.3px; color:#faf1dc; }
-  .brand p{ margin:0; font-size:11px; color:#c9d6c8; display:none; }
-  
+  .brand h1{margin:0; font-size:15px; font-weight:800; letter-spacing:.3px; color:#faf1dc;}
+  .brand p{margin:0; font-size:11px; color:#c9d6c8; display:none;}
   @media (min-width: 600px) {
-    .brand h1{ font-size:19px; }
-    .brand p{ display:block; }
-    .top-inner{ padding:14px 20px 10px; }
+    .brand h1{font-size:19px;} .brand p{display:block;} .top-inner{padding:14px 20px 10px;}
   }
-
-  .toolbar{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+  .toolbar{display:flex; align-items:center; gap:8px; flex-wrap:wrap;}
   .tool-group{
     display:flex; align-items:center; gap:6px;
-    background:rgba(255,255,255,.08);
-    border:1px solid rgba(255,255,255,.14);
+    background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.14);
     padding:4px 8px; border-radius:8px;
   }
   .tool-group label{font-size:11.5px; color:#d8e2d3; white-space:nowrap;}
   select.tool-select{
     background:transparent; color:#f8f1de; border:none; font-size:13px; font-weight:700;
-    font-family:inherit; cursor:pointer; outline:none; width: 50px; text-align: center;
+    font-family:inherit; cursor:pointer; outline:none; width:50px; text-align:center;
   }
   select.tool-select option{color:#1c1c1c; font-weight:600;}
-  
   .step-btn{
     width:32px;height:32px;border-radius:8px;border:1px solid rgba(255,255,255,.25);
     background:rgba(255,255,255,.08); color:#fbeed3; cursor:pointer; font-size:16px;
     line-height:1; display:flex;align-items:center;justify-content:center; flex:none;
   }
   .step-btn:hover{background:rgba(255,255,255,.18);}
-
   .dropdown{position:relative;}
   .dropdown-btn{
     display:flex; align-items:center; gap:6px;
@@ -118,45 +89,36 @@
   .dropdown-btn .chev{transition:transform .2s; font-size:10px; opacity:.8;}
   .dropdown.open .dropdown-btn .chev{transform:rotate(180deg);}
   .dropdown-panel{
-    position:absolute; top:calc(100% + 10px); right:0;
-    width:320px; max-width:88vw;
-    background:var(--card); color:var(--ink);
-    border:1px solid var(--gold-line); border-radius:14px;
-    box-shadow:var(--shadow); z-index:70;
-    overflow:hidden; max-height:70vh;
-    display:none; flex-direction:column;
+    position:absolute; top:calc(100% + 10px); right:0; width:320px; max-width:88vw;
+    background:var(--card); color:var(--ink); border:1px solid var(--gold-line);
+    border-radius:14px; box-shadow:var(--shadow); z-index:70;
+    overflow:hidden; max-height:70vh; display:none; flex-direction:column;
   }
   .dropdown.open .dropdown-panel{display:flex;}
-  @media (max-width:600px){ .dropdown-panel{position:fixed; top:auto; bottom:0; right:0; left:0; width:auto; max-width:none; border-radius:16px 16px 0 0; max-height:78vh;} }
-
+  @media (max-width:600px){
+    .dropdown-panel{position:fixed; top:auto; bottom:0; right:0; left:0; width:auto; max-width:none; border-radius:16px 16px 0 0; max-height:78vh;}
+  }
   #dropdownBackdrop{
     position:fixed; inset:0; z-index:35;
-    background:rgba(15,30,25,.38); backdrop-filter:blur(1.5px); -webkit-backdrop-filter:blur(1.5px);
+    background:rgba(15,30,25,.38); backdrop-filter:blur(1.5px);
     opacity:0; pointer-events:none; transition:opacity .22s ease;
   }
   #dropdownBackdrop.show{opacity:1; pointer-events:auto;}
-
   .settings-modal{
-    position:fixed; inset:0; z-index:200;
-    background:rgba(15,30,25,.65);
-    backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px);
-    display:none; align-items:flex-end; justify-content:center;
+    position:fixed; inset:0; z-index:200; background:rgba(15,30,25,.65);
+    backdrop-filter:blur(6px); display:none; align-items:flex-end; justify-content:center;
   }
   .settings-modal.show{display:flex;}
   .settings-modal-content{
     background:var(--card); width:100%; max-width:500px;
     border-radius:20px 20px 0 0; padding:20px;
-    box-shadow:0 -10px 40px rgba(0,0,0,.3);
-    animation:slideUp .3s ease;
-    max-height: 85dvh;
-    overflow-y: auto;
+    box-shadow:0 -10px 40px rgba(0,0,0,.3); animation:slideUp .3s ease;
+    max-height:85dvh; overflow-y:auto;
   }
   @media (min-width:600px){
-    .settings-modal{align-items:center;}
-    .settings-modal-content{border-radius:20px;}
+    .settings-modal{align-items:center;} .settings-modal-content{border-radius:20px;}
   }
   @keyframes slideUp{from{transform:translateY(100%);} to{transform:translateY(0);}}
-
   .settings-section{padding:14px 0; border-bottom:1px solid #efe6c9;}
   .settings-section:last-child{border-bottom:none;}
   .settings-section h4{margin:0 0 10px; font-size:13px; color:var(--emerald); font-family:'Cairo',sans-serif; font-weight:800;}
@@ -172,7 +134,6 @@
   }
   .size-row .step-btn:hover{background:var(--gold-soft);}
   .size-val{font-weight:800; color:var(--ink); min-width:44px; text-align:center; font-size:16px;}
-
   .speed-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:6px; margin-bottom:10px;}
   .speed-btn{
     padding:8px 4px; border-radius:8px; border:1.5px solid var(--gold-line);
@@ -186,10 +147,9 @@
     display:flex; align-items:center; justify-content:center; gap:8px;
   }
   .autoscroll-toggle.on{background:var(--emerald); color:#f6ead0;}
-
   .panel-header{
     display:flex; align-items:center; justify-content:space-between;
-    padding:0 0 14px 0; margin-bottom: 4px; border-bottom:1px solid var(--gold-line);
+    padding:0 0 14px 0; margin-bottom:4px; border-bottom:1px solid var(--gold-line);
     font-family:'Cairo',sans-serif; font-weight:800; font-size:15px; color:var(--emerald);
   }
   .panel-close{
@@ -197,7 +157,6 @@
     padding:6px 14px; font-family:'Cairo',sans-serif; font-weight:700; font-size:12px; cursor:pointer;
   }
   .panel-close:hover{background:var(--emerald-deep);}
-
   .search-wrap{position:relative; flex:1 1 160px; max-width:260px;}
   .search-wrap input{
     width:100%; padding:8px 32px 8px 12px; border-radius:8px; border:1px solid rgba(255,255,255,.2);
@@ -210,20 +169,12 @@
     max-height:360px; overflow:auto; box-shadow:var(--shadow); z-index:60; display:none;
   }
   .search-results.show{display:block;}
-  .search-results .sr-item{
-    padding:10px 14px; border-bottom:1px solid #eee2c4; cursor:pointer; color:var(--ink);
-  }
+  .search-results .sr-item{padding:10px 14px; border-bottom:1px solid #eee2c4; cursor:pointer; color:var(--ink);}
   .search-results .sr-item:hover{background:var(--parchment-deep);}
   .search-results .sr-meta{font-size:11px; color:var(--ink-soft); margin-top:4px;}
   .search-empty{padding:14px; font-size:13px; color:var(--ink-soft); text-align:center;}
-
-  .layout{
-    max-width:900px; margin:0 auto;
-    padding:10px 10px 80px;
-    min-height: calc(100dvh - 50px);
-  }
-  @media (max-width: 880px){ .layout{padding:8px 6px 80px;} }
-
+  .layout{max-width:900px; margin:0 auto; padding:10px 10px 80px; min-height:calc(100dvh - 50px);}
+  @media (max-width: 880px){.layout{padding:8px 6px 80px;}}
   .tabs{display:flex; border-bottom:1px solid var(--gold-line);}
   .tabs button{
     flex:1; padding:12px 8px; background:none; border:none; cursor:pointer;
@@ -231,31 +182,28 @@
     border-bottom:3px solid transparent;
   }
   .tabs button.active{color:var(--emerald); border-bottom-color:var(--gold);}
-
   .list-filter{padding:10px 12px; border-bottom:1px solid #efe6c9;}
   .list-filter input{
     width:100%; padding:8px 10px; border-radius:8px; border:1px solid var(--gold-line);
     font-family:inherit; font-size:13px; outline:none; background:#fffef9;
   }
-
-  .list{overflow-y:auto; padding:6px 0; flex:1; min-height:0; max-height: 60vh;}
+  .list{overflow-y:auto; padding:6px 0; flex:1; min-height:0; max-height:60vh;}
   .surah-item{
-    display:flex; align-items:center; gap:10px;
-    padding:10px 14px; cursor:pointer; border-inline-start:3px solid transparent;
+    display:flex; align-items:center; gap:10px; padding:10px 14px; cursor:pointer;
+    border-inline-start:3px solid transparent;
   }
   .surah-item:hover{background:var(--parchment-deep);}
   .surah-item.active{background:#eadfba55; border-inline-start-color:var(--gold);}
   .s-num{
-    flex:none; width:30px;height:30px;border-radius:50%;
-    border:1.5px solid var(--gold); color:var(--emerald); font-size:12px; font-weight:800;
+    flex:none; width:30px;height:30px;border-radius:50%; border:1.5px solid var(--gold);
+    color:var(--emerald); font-size:12px; font-weight:800;
     display:flex;align-items:center;justify-content:center; background:#fff;
   }
   .s-name{font-weight:700; font-size:15px; color:var(--ink);}
   .s-meta{font-size:11px; color:var(--ink-soft); margin-inline-start:auto; text-align:left;}
-
   .juz-item{
-    display:flex; align-items:center; gap:12px;
-    padding:10px 14px; cursor:pointer; border-inline-start:3px solid transparent;
+    display:flex; align-items:center; gap:12px; padding:10px 14px; cursor:pointer;
+    border-inline-start:3px solid transparent;
   }
   .juz-item:hover{background:var(--parchment-deep);}
   .juz-item.active{background:#eadfba55; border-inline-start-color:var(--gold);}
@@ -264,7 +212,6 @@
     display:flex;align-items:center;justify-content:center; font-weight:800; font-size:13px;
   }
   .j-label{font-size:14px; font-weight:600; color:var(--ink);}
-
   .reader-wrap{min-height:70vh;}
   .surah-card{
     background:var(--card); border:1px solid var(--gold-line); border-radius:var(--radius);
@@ -276,7 +223,6 @@
   }
   .surah-head h2{margin:0; font-family:'Amiri Quran',serif; font-size:26px; letter-spacing:1px;}
   .surah-head .sub{margin-top:8px; font-size:12px; color:#d8e6d2; display:flex; justify-content:center; gap:12px; flex-wrap:wrap;}
-  
   .play-fab{
     position:absolute; inset-inline-end:16px; top:16px;
     display:flex; align-items:center; gap:6px;
@@ -284,26 +230,19 @@
     color:#faf1dc; padding:6px 12px; border-radius:30px; cursor:pointer; font-size:12px; font-family:inherit;
   }
   .play-fab:hover{background:rgba(255,255,255,.22);}
-  
   .bismillah{
     text-align:center; padding:20px 10px 6px; font-family:var(--reader-font);
     font-size:calc(var(--reader-size) * 0.85); color:var(--emerald);
   }
   .ayat-block{
-    padding:8px 24px 34px;
-    font-family:var(--reader-font);
-    font-size:var(--reader-size);
-    line-height:2.4;
-    color:var(--ink);
-    text-align:justify;
-    direction:rtl;
+    padding:8px 24px 34px; font-family:var(--reader-font); font-size:var(--reader-size);
+    line-height:2.4; color:var(--ink); text-align:justify; direction:rtl;
   }
-  @media (max-width:600px){ .ayat-block{padding:8px 14px 26px;} }
+  @media (max-width:600px){.ayat-block{padding:8px 14px 26px;}}
   .ayah{transition:background .3s;}
   .ayah.hilite{background:#f3dfa6aa; border-radius:6px;}
   .ayah-badge{
-    display:inline-block; vertical-align:-0.18em;
-    width:1.15em; height:1.15em; margin:0 3px;
+    display:inline-block; vertical-align:-0.18em; width:1.15em; height:1.15em; margin:0 3px;
     filter: drop-shadow(0 1px 1px rgba(90,65,20,.25));
   }
   .surah-nav{
@@ -317,12 +256,10 @@
   }
   .nav-btn:hover{background:var(--gold-soft); color:#22301f;}
   .nav-btn[disabled]{opacity:.35; cursor:default;}
-
   .juz-list-inner .surah-mini-head{
     text-align:center; padding:18px 10px 4px; color:var(--gold); font-family:'Amiri Quran',serif; font-size:22px;
     border-top:1px dashed var(--gold-line); margin-top:12px;
   }
-
   .loading, .placeholder{
     display:flex; flex-direction:column; align-items:center; justify-content:center;
     gap:14px; padding:80px 20px; color:var(--ink-soft); text-align:center;
@@ -333,18 +270,15 @@
     animation:spin 1s linear infinite;
   }
   @keyframes spin{to{transform:rotate(360deg);}}
-  
   .debug-msg{
-    color:#d32f2f; font-size:12px; margin-top:10px; font-family:monospace; 
-    direction:ltr; background:#ffebee; padding:10px; border-radius:6px; 
+    color:#d32f2f; font-size:12px; margin-top:10px; font-family:monospace;
+    direction:ltr; background:#ffebee; padding:10px; border-radius:6px;
     max-width:100%; word-break:break-word; display:none;
   }
-
   footer.credits{
-    max-width:1300px; margin:0 auto; padding:10px 24px 40px; color:var(--ink-soft); font-size:11px; text-align:center;
-    line-height:1.8;
+    max-width:1300px; margin:0 auto; padding:10px 24px 40px; color:var(--ink-soft);
+    font-size:11px; text-align:center; line-height:1.8;
   }
-
   #audioBar{
     position:fixed; bottom:0; inset-inline:0; z-index:80;
     background:var(--emerald-deep); color:#f5ead2;
@@ -353,12 +287,9 @@
     transform:translateY(120%); transition:transform .35s ease;
   }
   #audioBar.show{transform:translateY(0);}
-  #audioBar .ab-title{font-size:12px; font-weight:700; white-space:nowrap; max-width: 120px; overflow: hidden; text-overflow: ellipsis;}
+  #audioBar .ab-title{font-size:12px; font-weight:700; white-space:nowrap; max-width:120px; overflow:hidden; text-overflow:ellipsis;}
   #audioBar audio{flex:1; height:32px;}
-  #audioBar .ab-close{
-    background:none;border:none;color:#f5ead2;font-size:20px;cursor:pointer; line-height:1; flex:none;
-  }
-
+  #audioBar .ab-close{background:none;border:none;color:#f5ead2;font-size:20px;cursor:pointer; line-height:1; flex:none;}
   #autoscrollFab{
     position:fixed; inset-inline-start:16px; bottom:80px; z-index:75;
     display:flex; align-items:center; gap:8px;
@@ -372,7 +303,6 @@
     background:rgba(255,255,255,.14); border:1px solid rgba(255,255,255,.3); color:#f5ead2;
     width:26px;height:26px;border-radius:50%; cursor:pointer; display:flex;align-items:center;justify-content:center; font-size:13px; flex:none;
   }
-
   ::-webkit-scrollbar{width:6px;}
   ::-webkit-scrollbar-thumb{background:var(--gold-line); border-radius:3px;}
 </style>
@@ -388,18 +318,13 @@
         <p>رواية ورش عن نافع &middot; مجمع الملك فهد</p>
       </div>
     </div>
-
     <div class="toolbar">
       <div class="tool-group">
         <label>يوم الهجري:</label>
-        <select id="hijriDaySelect" class="tool-select" title="اختر يوم الشهر الهجري (1-30) لعرض الجزء المناسب">
-        </select>
+        <select id="hijriDaySelect" class="tool-select" title="اليوم الهجري (1-30) = الجزء"></select>
       </div>
-
       <div class="dropdown" id="indexDropdown">
-        <button class="dropdown-btn" id="indexBtn">
-          الفهرس <span class="chev">▾</span>
-        </button>
+        <button class="dropdown-btn" id="indexBtn">الفهرس <span class="chev">▾</span></button>
         <div class="dropdown-panel index-panel" id="indexPanel">
           <div class="panel-header">
             <span>فهرس المصحف</span>
@@ -416,9 +341,7 @@
           <div id="juzListEl" class="list" hidden></div>
         </div>
       </div>
-
       <button class="step-btn" id="settingsBtn" title="إعدادات العرض">⚙️</button>
-
       <div class="search-wrap">
         <input id="searchInput" type="text" placeholder="بحث في القرآن…">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#20291d" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
@@ -497,7 +420,7 @@
 </div>
 
 <footer class="credits">
-  النص القرآني برواية ورش عن نافع، والخط العثماني الرسمي، مأخوذان من قاعدة بيانات Quranpedia، نسخة موافقة لمطبوعة مجمّع الملك فهد لطباعة المصحف الشريف.
+  النص القرآني برواية ورش عن نافع، مأخوذ من API القرآن الكريم (alquran.cloud).
   التلاوة الصوتية للشيخ محمود خليل الحصري برواية ورش عن نافع.
 </footer>
 
@@ -511,12 +434,8 @@
 (function(){
   "use strict";
 
-  // مصادر بديلة متعددة - سيحاول كل مصدر بالترتيب
-  const API_URLS = [
-    "https://api.quranpedia.net/v1/mushafs/4",
-    "https://cdn.jsdelivr.net/gh/semarketir/quranjson/source/translation/ar_quran_simple.json"
-  ];
-  
+  // ✅ الرابط الصحيح لرواية ورش عن نافع
+  const API_URL = "https://api.alquran.cloud/v1/quran/quran-warsh";
   const AUDIO_URL = function(n) { return "https://server13.mp3quran.net/download/husr/Rewayat-Warsh-A-n-Nafi/" + String(n).padStart(3,'0') + ".mp3"; };
 
   const SURAHS = [
@@ -571,61 +490,59 @@
       .replace(/[إأآٱا]/g,'ا').replace(/ى/g,'ي').replace(/ة/g,'ه').replace(/[ؤئ]/g,'ء').replace(/\s+/g,' ').trim();
   }
 
-  // دالة تحميل محسنة باستخدام fetch مع مصادر بديلة
-  async function loadJSON(urls, callback) {
-    for (let i = 0; i < urls.length; i++) {
-      try {
-        const response = await fetch(urls[i], {
-          method: 'GET',
-          mode: 'cors',
-          headers: {
-            'Accept': 'application/json'
-          }
-        });
-        
-        if (!response.ok) {
-          throw new Error('HTTP ' + response.status);
-        }
-        
-        const data = await response.json();
-        callback(null, data);
-        return;
-      } catch (err) {
-        console.warn('فشل المصدر ' + (i+1) + ':', err.message);
-        if (i === urls.length - 1) {
-          callback(new Error('جميع المصادر فشلت: ' + err.message), null);
-        }
+  function calculateJuz(surahNum, ayahNum) {
+    const juzData = [
+      [1,1],[2,142],[2,253],[3,93],[4,24],[4,148],[5,82],[6,111],[7,88],[8,41],
+      [9,93],[11,6],[12,53],[15,1],[17,1],[18,75],[21,1],[23,1],[25,21],[27,56],
+      [29,46],[33,31],[36,28],[39,32],[41,47],[46,1],[51,31],[58,1],[67,1],[78,1]
+    ];
+    for (let i = juzData.length - 1; i >= 0; i--) {
+      if (surahNum > juzData[i][0] || (surahNum === juzData[i][0] && ayahNum >= juzData[i][1])) {
+        return i + 1;
       }
+    }
+    return 1;
+  }
+
+  async function loadJSON(url, callback) {
+    try {
+      const response = await fetch(url, { method: 'GET', mode: 'cors' });
+      if (!response.ok) throw new Error('HTTP ' + response.status);
+      const data = await response.json();
+      callback(null, data);
+    } catch (err) {
+      callback(new Error('فشل الاتصال: ' + err.message), null);
     }
   }
 
   function loadAll(){
-    loadJSON(API_URLS, function(err, data){
+    loadJSON(API_URL, function(err, data){
       if(err){
         debugMsg.style.display = 'block';
         debugMsg.textContent = "خطأ: " + err.message;
-        readerEl.innerHTML = '<div class="placeholder"><div class="spinner"></div><p>تعذّر تحميل المصحف.</p><p class="debug-msg" style="display:block;">' + err.message + '</p><button class="nav-btn" onclick="location.reload()" style="margin-top:15px;">إعادة المحاولة</button></div>';
+        readerEl.innerHTML = '<div class="placeholder"><div class="spinner"></div><p>تعذّر تحميل المصحف برواية ورش.</p><p class="debug-msg" style="display:block;">' + err.message + '</p><button class="nav-btn" onclick="location.reload()" style="margin-top:15px;">إعادة المحاولة</button></div>';
         return;
       }
 
       try{
-        // معالجة البيانات حسب هيكلها
-        let surahs = data.surahs || data.data || [];
+        // ✅ معالجة البيانات من alquran.cloud
+        const surahs = data.data.surahs || [];
         
         surahs.forEach(function(surah){
-          let ayahs = surah.ayahs || surah.verses || [];
+          const chapter = surah.number;
+          const ayahs = surah.ayahs || [];
+          
           ayahs.forEach(function(a){
-            const chapter = parseInt(a.surah || a.surahNumber || a.number, 10);
-            const verse = a.number || a.numberInSurah;
-            const text = cleanText(a.text || a.content || '');
+            const verse = a.numberInSurah;
+            const text = cleanText(a.text);
+            
             if(!versesByChapter[chapter]) versesByChapter[chapter]=[];
             versesByChapter[chapter].push({verse:verse, text:text});
             flatVerses.push({chapter:chapter, verse:verse, text:text, norm:normalize(text)});
-            const juzNum = a.juz || a.juzNumber;
-            if(juzNum){
-              if(!juzVerses[juzNum]) juzVerses[juzNum]=[];
-              juzVerses[juzNum].push({chapter:chapter, verse:verse, text:text});
-            }
+            
+            const juzNum = calculateJuz(chapter, verse);
+            if(!juzVerses[juzNum]) juzVerses[juzNum]=[];
+            juzVerses[juzNum].push({chapter:chapter, verse:verse, text:text});
           });
         });
         
@@ -633,8 +550,7 @@
         
         for(let i=1; i<=30; i++){
           const opt = document.createElement('option');
-          opt.value = i;
-          opt.textContent = i;
+          opt.value = i; opt.textContent = i;
           hijriDaySelect.appendChild(opt);
         }
         hijriDaySelect.value = 1;
@@ -648,6 +564,9 @@
         buildSurahList();
         buildJuzList();
         renderSurah(1);
+        
+        console.log('✅ تم تحميل رواية ورش بنجاح من alquran.cloud');
+        
       }catch(e){
         debugMsg.style.display = 'block';
         debugMsg.textContent = "خطأ في المعالجة: " + e.message;
@@ -724,7 +643,7 @@
         '<div class="surah-head">' +
           '<button class="play-fab" id="playBtn"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg> استمع</button>' +
           '<h2>سورة ' + s.name + '</h2>' +
-          '<div class="sub"><span>' + s.type + '</span><span>' + s.count + ' آية</span><span>رقم ' + s.number + '</span></div>' +
+          '<div class="sub"><span>' + s.type + '</span><span>' + s.count + ' آية</span><span>رقم ' + s.number + '</span><span style="color:#f6e2a8;">رواية ورش</span></div>' +
         '</div>' +
         (showBismillah ? '<div class="bismillah">بِسْمِ اِ۬للَّهِ اِ۬لرَّحْمَٰنِ اِ۬لرَّحِيمِ</div>' : '') +
         '<div class="ayat-block" id="ayatBlock">' + ayatHtml + '</div>' +
@@ -786,7 +705,6 @@
         const nextBtn = document.getElementById('nextJuz');
         if(prevBtn) prevBtn.addEventListener('click', function(){ if(n>1) renderJuz(n-1); window.scrollTo({top:0,behavior:'smooth'}); });
         if(nextBtn) nextBtn.addEventListener('click', function(){ if(n<30) renderJuz(n+1); window.scrollTo({top:0,behavior:'smooth'}); });
-
       }catch(e){
         readerEl.innerHTML = '<div class="placeholder"><p>تعذّر تحميل هذا الجزء. حاول مرة أخرى.</p></div>';
       }
@@ -795,13 +713,12 @@
 
   function playSurah(num, name){
     audioPlayer.src = AUDIO_URL(num);
-    audioTitle.textContent = 'سورة ' + name;
+    audioTitle.textContent = 'سورة ' + name + ' — ورش عن نافع';
     audioBar.classList.add('show');
     audioPlayer.play().catch(function(){});
   }
   document.getElementById('audioClose').addEventListener('click', function(){
-    audioPlayer.pause();
-    audioBar.classList.remove('show');
+    audioPlayer.pause(); audioBar.classList.remove('show');
   });
 
   const tabSurah = document.getElementById('tabSurah');
@@ -879,8 +796,7 @@
   const autoscrollFab = document.getElementById('autoscrollFab');
 
   function startAutoScroll(){
-    scrolling = true;
-    lastTs = null;
+    scrolling = true; lastTs = null;
     autoscrollToggle.textContent = '⏸ إيقاف التمرير التلقائي';
     autoscrollToggle.classList.add('on');
     autoscrollFab.classList.add('show');
@@ -895,8 +811,7 @@
     document.getElementById('autoscrollFabPause').textContent = '▶';
   }
   function stopAutoScroll(){
-    pauseAutoScroll();
-    autoscrollFab.classList.remove('show');
+    pauseAutoScroll(); autoscrollFab.classList.remove('show');
   }
 
   function scrollStep(ts){
@@ -905,8 +820,7 @@
     const dt = (ts - lastTs) / 1000;
     lastTs = ts;
     window.scrollBy(0, -scrollSpeed * dt);
-    const atTop = window.scrollY <= 10;
-    if(atTop){ stopAutoScroll(); return; }
+    if(window.scrollY <= 10){ stopAutoScroll(); return; }
     rafId = requestAnimationFrame(scrollStep);
   }
 
@@ -915,8 +829,7 @@
     else { startAutoScroll(); }
   });
   document.getElementById('autoscrollFabPause').addEventListener('click', function(){
-    if(scrolling) pauseAutoScroll();
-    else startAutoScroll();
+    if(scrolling) pauseAutoScroll(); else startAutoScroll();
   });
   document.getElementById('autoscrollFabStop').addEventListener('click', stopAutoScroll);
 
@@ -957,8 +870,7 @@
       searchResults.querySelectorAll('.sr-item').forEach(function(el){
         el.addEventListener('click', function(){
           const c = +el.dataset.c, v = +el.dataset.v;
-          tabSurah.click();
-          renderSurah(c, v);
+          tabSurah.click(); renderSurah(c, v);
           searchResults.classList.remove('show');
           searchInput.value='';
           window.scrollTo({top:0, behavior:'smooth'});
