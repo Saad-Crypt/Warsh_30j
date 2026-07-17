@@ -10,7 +10,7 @@
 <style>
   @font-face{
     font-family: 'KFGQPC Warsh Uthmanic';
-    src: url('https://api.quranpedia.net/fonts/KFGQPCWarshUthmanicScript-Regul.woff2') format('woff2');
+    src: url('https://cdn.jsdelivr.net/gh/mustafa0x/quran-fonts@master/KFGQPCWarshUthmanicScript-Regular.woff2') format('woff2');
     font-display: swap;
   }
   :root{
@@ -136,7 +136,6 @@
   }
   #dropdownBackdrop.show{opacity:1; pointer-events:auto;}
 
-  /* Settings Modal (Separate Interface) */
   .settings-modal{
     position:fixed; inset:0; z-index:200;
     background:rgba(15,30,25,.65);
@@ -334,6 +333,12 @@
     animation:spin 1s linear infinite;
   }
   @keyframes spin{to{transform:rotate(360deg);}}
+  
+  .debug-msg{
+    color:#d32f2f; font-size:12px; margin-top:10px; font-family:monospace; 
+    direction:ltr; background:#ffebee; padding:10px; border-radius:6px; 
+    max-width:100%; word-break:break-word; display:none;
+  }
 
   footer.credits{
     max-width:1300px; margin:0 auto; padding:10px 24px 40px; color:var(--ink-soft); font-size:11px; text-align:center;
@@ -388,7 +393,6 @@
       <div class="tool-group">
         <label>يوم الهجري:</label>
         <select id="hijriDaySelect" class="tool-select" title="اختر يوم الشهر الهجري (1-30) لعرض الجزء المناسب">
-          <!-- JS will populate 1-30 -->
         </select>
       </div>
 
@@ -436,7 +440,6 @@
 
 <div id="dropdownBackdrop"></div>
 
-<!-- Settings Modal (Separate Interface) -->
 <div id="settingsModal" class="settings-modal">
   <div class="settings-modal-content">
     <div class="panel-header">
@@ -481,6 +484,7 @@
       <div class="placeholder">
         <div class="spinner"></div>
         <p>جارٍ تحميل نص المصحف الشريف برواية ورش عن نافع…</p>
+        <p id="debugMsg" class="debug-msg"></p>
       </div>
     </div>
   </main>
@@ -507,8 +511,12 @@
 (function(){
   "use strict";
 
-  const WARSH_JSON = "https://api.quranpedia.net/v1/mushafs/4";
-  const CORS_PROXY = "https://api.allorigins.win/raw?url=";
+  // مصادر بديلة متعددة - سيحاول كل مصدر بالترتيب
+  const API_URLS = [
+    "https://api.quranpedia.net/v1/mushafs/4",
+    "https://cdn.jsdelivr.net/gh/semarketir/quranjson/source/translation/ar_quran_simple.json"
+  ];
+  
   const AUDIO_URL = function(n) { return "https://server13.mp3quran.net/download/husr/Rewayat-Warsh-A-n-Nafi/" + String(n).padStart(3,'0') + ".mp3"; };
 
   const SURAHS = [
@@ -549,6 +557,7 @@
   let juzVerses = {};
 
   const readerEl = document.getElementById('reader');
+  const debugMsg = document.getElementById('debugMsg');
   const surahListEl = document.getElementById('surahListEl');
   const juzListEl = document.getElementById('juzListEl');
   const audioBar = document.getElementById('audioBar');
@@ -562,65 +571,66 @@
       .replace(/[إأآٱا]/g,'ا').replace(/ى/g,'ي').replace(/ة/g,'ه').replace(/[ؤئ]/g,'ء').replace(/\s+/g,' ').trim();
   }
 
-  const D = '[\\u064B-\\u065F\\u0670]*';
-  const AFTER = '(?=[\\s\\u06d6-\\u06ed]|$)';
-  const RASM_STEMS = [
-    ['\u0639','\u0644'],['\u0625','\u0644'],['\u062d','\u062a'],['\u0639','\u0633'],
-    ['\u0645','\u062a'],['\u0644','\u062f'],['\u0623','\u0646'],['\u0628','\u0644']
-  ].map(function(arr){ return new RegExp(arr[0]+D+arr[1]+D+'\u064a(?!\u0670)'+AFTER, 'g'); });
-
-  function fixRasm(text){
-    let out = text;
-    RASM_STEMS.forEach(function(re){ out = out.replace(re, function(m){ return m + '\u0670'; }); });
-    return out;
-  }
-
-  function loadJSON(url, callback, useProxy){
-    var xhr = new XMLHttpRequest();
-    var finalUrl = useProxy ? (CORS_PROXY + encodeURIComponent(url)) : url;
-    xhr.open('GET', finalUrl, true);
-    xhr.timeout = 15000;
-    xhr.ontimeout = function(){ if(!useProxy) loadJSON(url, callback, true); else callback(new Error('Timeout'), null); };
-    xhr.onreadystatechange = function(){
-      if(xhr.readyState === 4){
-        if(xhr.status === 200){
-          try{ callback(null, JSON.parse(xhr.responseText)); }
-          catch(e){ if(!useProxy) loadJSON(url, callback, true); else callback(new Error('Parse Error'), null); }
-        }else{
-          if(!useProxy && (xhr.status === 0 || xhr.status >= 400)) loadJSON(url, callback, true);
-          else callback(new Error('HTTP ' + xhr.status), null);
+  // دالة تحميل محسنة باستخدام fetch مع مصادر بديلة
+  async function loadJSON(urls, callback) {
+    for (let i = 0; i < urls.length; i++) {
+      try {
+        const response = await fetch(urls[i], {
+          method: 'GET',
+          mode: 'cors',
+          headers: {
+            'Accept': 'application/json'
+          }
+        });
+        
+        if (!response.ok) {
+          throw new Error('HTTP ' + response.status);
+        }
+        
+        const data = await response.json();
+        callback(null, data);
+        return;
+      } catch (err) {
+        console.warn('فشل المصدر ' + (i+1) + ':', err.message);
+        if (i === urls.length - 1) {
+          callback(new Error('جميع المصادر فشلت: ' + err.message), null);
         }
       }
-    };
-    xhr.onerror = function(){ if(!useProxy) loadJSON(url, callback, true); else callback(new Error('Network Error'), null); };
-    xhr.send();
+    }
   }
 
   function loadAll(){
-    loadJSON(WARSH_JSON, function(err, data){
+    loadJSON(API_URLS, function(err, data){
       if(err){
-        readerEl.innerHTML = '<div class="placeholder"><p>تعذّر تحميل نص المصحف. تأكد من الاتصال بالإنترنت.</p><button class="nav-btn" onclick="location.reload()">إعادة المحاولة</button></div>';
+        debugMsg.style.display = 'block';
+        debugMsg.textContent = "خطأ: " + err.message;
+        readerEl.innerHTML = '<div class="placeholder"><div class="spinner"></div><p>تعذّر تحميل المصحف.</p><p class="debug-msg" style="display:block;">' + err.message + '</p><button class="nav-btn" onclick="location.reload()" style="margin-top:15px;">إعادة المحاولة</button></div>';
         return;
       }
+
       try{
-        (data.surahs || []).forEach(function(surah){
-          (surah.ayahs || []).forEach(function(a){
-            const chapter = parseInt(a.surah, 10);
-            const verse = a.number;
-            const text = fixRasm(cleanText(a.text));
+        // معالجة البيانات حسب هيكلها
+        let surahs = data.surahs || data.data || [];
+        
+        surahs.forEach(function(surah){
+          let ayahs = surah.ayahs || surah.verses || [];
+          ayahs.forEach(function(a){
+            const chapter = parseInt(a.surah || a.surahNumber || a.number, 10);
+            const verse = a.number || a.numberInSurah;
+            const text = cleanText(a.text || a.content || '');
             if(!versesByChapter[chapter]) versesByChapter[chapter]=[];
             versesByChapter[chapter].push({verse:verse, text:text});
             flatVerses.push({chapter:chapter, verse:verse, text:text, norm:normalize(text)});
-            const juzNum = a.juz;
+            const juzNum = a.juz || a.juzNumber;
             if(juzNum){
               if(!juzVerses[juzNum]) juzVerses[juzNum]=[];
               juzVerses[juzNum].push({chapter:chapter, verse:verse, text:text});
             }
           });
         });
+        
         SURAHS.forEach(function(s){ s.count = (versesByChapter[s.number]||[]).length; });
         
-        // Populate Hijri Day Selector (1-30)
         for(let i=1; i<=30; i++){
           const opt = document.createElement('option');
           opt.value = i;
@@ -639,9 +649,10 @@
         buildJuzList();
         renderSurah(1);
       }catch(e){
-        readerEl.innerHTML = '<div class="placeholder"><p>حدث خطأ في معالجة البيانات.</p></div>';
+        debugMsg.style.display = 'block';
+        debugMsg.textContent = "خطأ في المعالجة: " + e.message;
       }
-    }, false);
+    });
   }
 
   function buildSurahList(filter){
@@ -740,8 +751,6 @@
   function renderJuz(n, clickedEl){
     document.querySelectorAll('.juz-item').forEach(function(el){ el.classList.remove('active'); });
     if(clickedEl) clickedEl.classList.add('active');
-    
-    // Sync with Hijri Day Selector
     hijriDaySelect.value = n;
 
     readerEl.innerHTML = '<div class="placeholder"><div class="spinner"></div><p>جارٍ تحميل الجزء ' + arabicOrdinal(n) + '…</p></div>';
@@ -810,7 +819,6 @@
     if(!surahListEl.hidden) buildSurahList(e.target.value);
   });
 
-  // Settings Modal Logic
   const settingsModal = document.getElementById('settingsModal');
   document.getElementById('settingsBtn').addEventListener('click', function(){ settingsModal.classList.add('show'); });
   document.getElementById('settingsModalClose').addEventListener('click', function(){ settingsModal.classList.remove('show'); });
@@ -852,7 +860,6 @@
   dropdownBackdrop.addEventListener('click', function(){ closeAllDropdowns(); });
   document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeAllDropdowns(); });
 
-  // Auto-scroll UPWARDS Logic
   let scrollSpeed = 45;
   let scrolling = false;
   let rafId = null;
@@ -897,11 +904,7 @@
     if(lastTs===null) lastTs = ts;
     const dt = (ts - lastTs) / 1000;
     lastTs = ts;
-    
-    // التمرير نحو الأعلى (قيم سالبة)
     window.scrollBy(0, -scrollSpeed * dt);
-    
-    // التوقف عند الوصول إلى أعلى الصفحة
     const atTop = window.scrollY <= 10;
     if(atTop){ stopAutoScroll(); return; }
     rafId = requestAnimationFrame(scrollStep);
@@ -920,7 +923,6 @@
   window.addEventListener('wheel', function(){ if(scrolling) pauseAutoScroll(); }, {passive:true});
   window.addEventListener('touchstart', function(){ if(scrolling) pauseAutoScroll(); }, {passive:true});
 
-  // Search Logic
   const searchInput = document.getElementById('searchInput');
   const searchResults = document.getElementById('searchResults');
   let searchTimer = null;
